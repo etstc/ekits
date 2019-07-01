@@ -37,7 +37,7 @@ public final class MaskLexer {
 			switch (c) {
 			case ':':
 				if (!canHadColon || buffer.length() > 1 || lastPos == i) {
-					throw new MaskException(pattern, i);
+					throw MaskException.lexerError(pattern, i);
 				}
 				tokens.add(new MaskToken(buffer.toString(), MaskToken.CHAR));
 				buffer.delete(0, buffer.length());
@@ -48,7 +48,7 @@ public final class MaskLexer {
 				break;
 			case '+':
 				if (!canHadPlusOrMinus || buffer.length() > 0) {
-					throw new MaskException(pattern, i);
+					throw MaskException.lexerError(pattern, i);
 				}
 				tokens.add(MaskToken.TOKEN_PLUS);
 
@@ -57,7 +57,7 @@ public final class MaskLexer {
 				break;
 			case '-':
 				if (!canHadPlusOrMinus || buffer.length() > 0) {
-					throw new MaskException(pattern, i);
+					throw MaskException.lexerError(pattern, i);
 				}
 				tokens.add(MaskToken.TOKEN_MINUS);
 
@@ -66,7 +66,7 @@ public final class MaskLexer {
 				break;
 			case '(':
 				if (!canHadbracket || bracketStart || buffer.length() > 0) {
-					throw new MaskException(pattern, i);
+					throw MaskException.lexerError(pattern, i);
 				}
 				canHadPlusOrMinus = false;
 				canHadbracket = false;
@@ -74,9 +74,8 @@ public final class MaskLexer {
 				canHadColon = false;
 				break;
 			case ',':
-				if (!canHadComma || !bracketStart || bufferHadChar
-						|| !bufferHadNum) {
-					throw new MaskException(pattern, i);
+				if (!canHadComma || !bracketStart || bufferHadChar || !bufferHadNum) {
+					throw MaskException.lexerError(pattern, i);
 				}
 
 				tokens.add(new MaskToken(buffer.toString(), MaskToken.NUM));
@@ -87,7 +86,7 @@ public final class MaskLexer {
 				break;
 			case ')':
 				if (!bracketStart || bufferHadChar || !bufferHadNum) {
-					throw new MaskException(pattern, i);
+					throw MaskException.lexerError(pattern, i);
 				}
 
 				tokens.add(new MaskToken(buffer.toString(), MaskToken.NUM));
@@ -98,7 +97,7 @@ public final class MaskLexer {
 				break;
 			case ';':
 				if (bracketStart || bufferHadChar) {
-					throw new MaskException(pattern, i);
+					throw MaskException.lexerError(pattern, i);
 				}
 
 				if (buffer.length() > 0) {
@@ -126,18 +125,17 @@ public final class MaskLexer {
 			case '8':
 			case '9':
 				if (bufferHadChar && buffer.length() > 0) {
-					throw new MaskException(pattern, i);
+					throw MaskException.lexerError(pattern, i);
 				}
 				buffer.append(c);
 				bufferHadNum = true;
 
 				if (lastPos == i) {
 					if (bracketStart || bufferHadChar) {
-						throw new MaskException(pattern, i);
+						throw MaskException.lexerError(pattern, i);
 					}
 					if (buffer.length() > 0) {
-						tokens.add(new MaskToken(buffer.toString(),
-								MaskToken.NUM));
+						tokens.add(new MaskToken(buffer.toString(), MaskToken.NUM));
 						buffer.delete(0, buffer.length());
 						bufferHadNum = false;
 					}
@@ -146,7 +144,7 @@ public final class MaskLexer {
 				break;
 			default:
 				if (!canHadColon || buffer.length() > 0 || lastPos == i) {
-					throw new MaskException(pattern, i);
+					throw MaskException.lexerError(pattern, i);
 				}
 				buffer.append(c);
 				bufferHadChar = true;

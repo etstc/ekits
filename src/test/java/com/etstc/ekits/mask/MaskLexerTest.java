@@ -8,11 +8,8 @@ public class MaskLexerTest {
 
 	@Test
 	public void testLexer() {
-
 		String tx = "$:;2;+3;-3; :0;o:0;o:-3;(1,2);o:(1,2);+(1,2);o:+(2,3)";
-
 		List<List<MaskToken>> list = MaskLexer.lexer(tx);
-
 		for (List<MaskToken> l : list) {
 			for (MaskToken x : l) {
 				System.out.print(x);
@@ -32,8 +29,12 @@ public class MaskLexerTest {
 		System.out.println(MaskUtils.instance.mask("+5", "1234567890"));
 		System.out.println(MaskUtils.instance.mask("+5", "123"));
 		System.out.println(MaskUtils.instance.mask("+5", "12345"));
-		System.out.println(MaskUtils.instance.mask("-5", "1234567890"));
+		System.out.println(MaskUtils.instance.mask("-2", "1234567890"));
 		System.out.println(MaskUtils.instance.mask("-5", "123"));
 		System.out.println(MaskUtils.instance.mask("-5", "12345"));
+		System.out.println(MaskUtils.instance.mask("*:+(1,10)", "1234567890"));
+		System.out.println(MaskUtils.instance.mask("*:+(0,10)", "1234567890"));
+		System.out.println(MaskUtils.instance.mask("*:-(1,10)", "1234567890"));
+		System.out.println(MaskUtils.instance.mask("*:-(9,3)", "1234567890"));
 	}
 }
