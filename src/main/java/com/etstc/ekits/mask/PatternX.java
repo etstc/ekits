@@ -35,40 +35,22 @@ class PatternX {
 			oneToken(tokens.get(0));
 			break;
 		case 2:
-			twoTokens(tokens);
+			MaskToken xToken = tokens.get(0);
+			MaskToken numToken = tokens.get(1);
+			twoTokens(xToken, numToken);
 			break;
 		case 3:
-			// TODO
+			MaskToken tX = tokens.get(0);
+			MaskToken tY = tokens.get(1);
+			MaskToken tZ = tokens.get(2);
+			threeTokens(tX, tY, tZ);
 			break;
 		case 4:
-			MaskToken t1 = tokens.get(0); // maskChar
-			String c = t1.getContent();
-			if (c.length() > 0) {
-				this.maskChar = c.charAt(0);
-			} else {
-				this.maskChar = StringUtils.SPACE.charAt(0);
-			}
-
-			MaskToken t2 = tokens.get(1); // + or -
-			if (MaskToken.TOKEN_MINUS == t2) {
-				this.needReverse = true;
-			}
-
-			MaskToken t3 = tokens.get(2); // begin
-			int begin = Integer.valueOf(t3.getContent());
-			MaskToken t4 = tokens.get(3); // length
-			int count = Integer.valueOf(t4.getContent());
-			if (count == 0) {
-				throw MaskException.maskCharCountError();
-			}
-			String regexStr = "(.{" + begin + "})(.{1," + count + "})(.*)";
-			if (begin > 0) {
-				this.keepLen = begin;
-			}
-			this.hideLen = count;
-			this.replacement = "$1" + PLACEHOLDER + "$3";
-			this.regex = Pattern.compile(regexStr);
-
+			MaskToken charToken = tokens.get(0); // maskChar
+			MaskToken symbolToken = tokens.get(1); // + or -
+			MaskToken beginToken = tokens.get(2); // begin
+			MaskToken lengthToken = tokens.get(3); // length
+			fourTokens(charToken, symbolToken, beginToken, lengthToken);
 			break;
 		default:
 			throw MaskException.unsupportedError();
@@ -76,11 +58,11 @@ class PatternX {
 		return this;
 	}
 
-	private void oneToken(MaskToken t) {
-		if (!t.isNum()) {
+	private void oneToken(MaskToken numToken) {
+		if (!numToken.isNum()) {
 			throw MaskException.unsupportedError();
 		}
-		int count = Integer.valueOf(t.getContent());
+		int count = Integer.valueOf(numToken.getContent());
 		if (count == 0) {
 			throw MaskException.maskCharCountError();
 		}
@@ -90,35 +72,84 @@ class PatternX {
 		this.regex = Pattern.compile(regexStr);
 	}
 
-	private void twoTokens(List<MaskToken> tokens) {
-		MaskToken t1 = tokens.get(0);
-		MaskToken t2 = tokens.get(1);
-		if (!t2.isNum()) {
+	private void twoTokens(MaskToken xToken, MaskToken numToken) {
+		if (!numToken.isNum()) {
 			throw MaskException.unsupportedError();
 		}
-		switch (t1.getType()) {
+		switch (xToken.getType()) {
 		case MaskToken.CHAR:
-			String c = t1.getContent();
+			String c = xToken.getContent();
 			if (c.length() > 0) {
 				this.maskChar = c.charAt(0);
 			} else {
 				this.maskChar = StringUtils.SPACE.charAt(0);
 			}
-			oneToken(t2);
+			oneToken(numToken);
 			break;
 		case MaskToken.PLUS:
-			oneToken(t2);
+			oneToken(numToken);
 			break;
 		case MaskToken.MINUS:
 			this.needReverse = true;
-			oneToken(t2);
+			oneToken(numToken);
 			break;
 		case MaskToken.NUM:
-			// TODO:(1,2)
+			twoNumberTokens(xToken, numToken);
 			break;
 		default:
 			throw MaskException.unsupportedError();
 		}
+	}
+
+	/**
+	 * 前后保留指定长度
+	 * 
+	 * @param beginRemToken
+	 *            开始保留
+	 * @param endRemToken
+	 *            结束保留
+	 */
+	private void twoNumberTokens(MaskToken beginRemToken, MaskToken endRemToken) {
+		int beginRem = Integer.valueOf(beginRemToken.getContent());
+		int endRem = Integer.valueOf(endRemToken.getContent());
+		String regexStr = "(.{" + beginRem + "})(.*)(.{" + endRem + "})";
+		int rem = beginRem + endRem;
+		this.hideLen = Integer.MAX_VALUE; // 尽可能多的掩码
+		if (rem > 0) {
+			this.keepLen = rem; // 前后共需保留长度
+		}
+		this.replacement = "$1" + PLACEHOLDER + "$3";
+		this.regex = Pattern.compile(regexStr);
+	}
+
+	private void threeTokens(MaskToken xToken, MaskToken yToken, MaskToken numToken) {
+		// TODO
+	}
+
+	private void fourTokens(MaskToken charToken, MaskToken symbolToken, MaskToken beginToken, MaskToken lengthToken) {
+		String c = charToken.getContent();// maskChar
+		if (c.length() > 0) {
+			this.maskChar = c.charAt(0);
+		} else {
+			this.maskChar = StringUtils.SPACE.charAt(0);
+		}
+
+		if (MaskToken.TOKEN_MINUS == symbolToken) {
+			this.needReverse = true;
+		}
+
+		int begin = Integer.valueOf(beginToken.getContent());
+		int count = Integer.valueOf(lengthToken.getContent());
+		if (count == 0) {
+			throw MaskException.maskCharCountError();
+		}
+		String regexStr = "(.{" + begin + "})(.{1," + count + "})(.*)";
+		if (begin > 0) {
+			this.keepLen = begin;
+		}
+		this.hideLen = count;
+		this.replacement = "$1" + PLACEHOLDER + "$3";
+		this.regex = Pattern.compile(regexStr);
 	}
 
 	public String mask(CharSequence value) {

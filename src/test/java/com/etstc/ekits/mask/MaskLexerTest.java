@@ -36,5 +36,7 @@ public class MaskLexerTest {
 		System.out.println(MaskUtils.instance.mask("*:+(0,10)", "1234567890"));
 		System.out.println(MaskUtils.instance.mask("*:-(1,10)", "1234567890"));
 		System.out.println(MaskUtils.instance.mask("*:-(9,3)", "1234567890"));
+		System.out.println(MaskUtils.instance.mask("*:-(3,3);:3", "我是中文就是中文不是也是中文"));
+		System.out.println(MaskUtils.instance.mask("(3,3)", "12345我是中文就是中文不是也是中文67890"));
 	}
 }
