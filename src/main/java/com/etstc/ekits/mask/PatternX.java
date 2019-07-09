@@ -32,25 +32,25 @@ class PatternX {
 		}
 		switch (tokens.size()) {
 		case 1:
-			oneToken(tokens.get(0));
+			this.oneToken(tokens.get(0));
 			break;
 		case 2:
 			MaskToken xToken = tokens.get(0);
 			MaskToken numToken = tokens.get(1);
-			twoTokens(xToken, numToken);
+			this.twoTokens(xToken, numToken);
 			break;
 		case 3:
 			MaskToken tX = tokens.get(0);
 			MaskToken tY = tokens.get(1);
 			MaskToken tZ = tokens.get(2);
-			threeTokens(tX, tY, tZ);
+			this.threeTokens(tX, tY, tZ);
 			break;
 		case 4:
 			MaskToken charToken = tokens.get(0); // maskChar
 			MaskToken symbolToken = tokens.get(1); // + or -
 			MaskToken beginToken = tokens.get(2); // begin
 			MaskToken lengthToken = tokens.get(3); // length
-			fourTokens(charToken, symbolToken, beginToken, lengthToken);
+			this.fourTokens(charToken, symbolToken, beginToken, lengthToken);
 			break;
 		default:
 			throw MaskException.unsupportedError();
@@ -84,17 +84,17 @@ class PatternX {
 			} else {
 				this.maskChar = StringUtils.SPACE.charAt(0);
 			}
-			oneToken(numToken);
+			this.oneToken(numToken);
 			break;
 		case MaskToken.PLUS:
-			oneToken(numToken);
+			this.oneToken(numToken);
 			break;
 		case MaskToken.MINUS:
 			this.needReverse = true;
-			oneToken(numToken);
+			this.oneToken(numToken);
 			break;
 		case MaskToken.NUM:
-			twoNumberTokens(xToken, numToken);
+			this.twoNumberTokens(xToken, numToken);
 			break;
 		default:
 			throw MaskException.unsupportedError();
@@ -123,21 +123,40 @@ class PatternX {
 	}
 
 	private void threeTokens(MaskToken xToken, MaskToken yToken, MaskToken numToken) {
-		// TODO
+		if (!numToken.isNum()) {
+			throw MaskException.unsupportedError();
+		}
+		switch (xToken.getType()) {
+		case MaskToken.CHAR:
+			String c = xToken.getContent();
+			if (c.length() > 0) {
+				this.maskChar = c.charAt(0);
+			} else {
+				this.maskChar = StringUtils.SPACE.charAt(0);
+			}
+			this.twoTokens(yToken, numToken);
+			break;
+		case MaskToken.PLUS:
+		case MaskToken.MINUS:
+			this.fourTokens(null, xToken, yToken, numToken);
+			break;
+		default:
+			throw MaskException.unsupportedError();
+		}
 	}
 
 	private void fourTokens(MaskToken charToken, MaskToken symbolToken, MaskToken beginToken, MaskToken lengthToken) {
-		String c = charToken.getContent();// maskChar
-		if (c.length() > 0) {
-			this.maskChar = c.charAt(0);
-		} else {
-			this.maskChar = StringUtils.SPACE.charAt(0);
+		if (charToken != null) {
+			String c = charToken.getContent();// maskChar
+			if (c.length() > 0) {
+				this.maskChar = c.charAt(0);
+			} else {
+				this.maskChar = StringUtils.SPACE.charAt(0);
+			}
 		}
-
 		if (MaskToken.TOKEN_MINUS == symbolToken) {
 			this.needReverse = true;
 		}
-
 		int begin = Integer.valueOf(beginToken.getContent());
 		int count = Integer.valueOf(lengthToken.getContent());
 		if (count == 0) {
@@ -152,7 +171,30 @@ class PatternX {
 		this.regex = Pattern.compile(regexStr);
 	}
 
+	/**
+	 * 掩码字符串
+	 * 
+	 * @param value
+	 *            被掩码字符串
+	 * @return String:掩码后字符串
+	 */
 	public String mask(CharSequence value) {
+		return this.mask(value, null);
+	}
+
+	/**
+	 * 掩码字符串
+	 * 
+	 * @param value
+	 *            被掩码字符串
+	 * @param maskChar
+	 *            用于掩码字符
+	 * @return String:掩码后字符串
+	 */
+	public String mask(CharSequence value, Character mChar) {
+		if (mChar != null) {
+			this.maskChar = mChar;
+		}
 		if (value == null) {
 			return null;
 		} else if (regex == null || replacement == null) {

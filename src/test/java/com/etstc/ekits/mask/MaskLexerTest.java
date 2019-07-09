@@ -8,7 +8,7 @@ public class MaskLexerTest {
 
 	@Test
 	public void testLexer() {
-		String tx = "$:;2;+3;-3; :0;o:0;o:-3;(1,2);o:(1,2);+(1,2);o:+(2,3)";
+		String tx = "3;+3;-3;*:3;(3,3);:+3;*:+3;*:-3;*:(3,3);+(3,3);-(3,3);*:+(3,3);*:-(3,3)";
 		List<List<MaskToken>> list = MaskLexer.lexer(tx);
 		for (List<MaskToken> l : list) {
 			for (MaskToken x : l) {
@@ -38,5 +38,17 @@ public class MaskLexerTest {
 		System.out.println(MaskUtils.instance.mask("*:-(9,3)", "1234567890"));
 		System.out.println(MaskUtils.instance.mask("*:-(3,3);:3", "我是中文就是中文不是也是中文"));
 		System.out.println(MaskUtils.instance.mask("(3,3)", "12345我是中文就是中文不是也是中文67890"));
+
+		System.out.println(MaskUtils.instance.mask("&:(3,3)", "12345我是中文就是中文不是也是中文67890"));
+		System.out.println(MaskUtils.instance.mask("&:(3,3)", "12345我是中文就是中文不是也是中文67890", '#'));
+		System.out.println(MaskUtils.instance.mask("&:+(3,3)", "12345我是中文就是中文不是也是中文67890"));
+		System.out.println(MaskUtils.instance.mask("&:+(3,3)", "12345我是中文就是中文不是也是中文67890", '#'));
+		System.out.println(MaskUtils.instance.mask("&:-(3,3)", "12345我是中文就是中文不是也是中文67890"));
+		System.out.println(MaskUtils.instance.mask("&:-(3,3)", "12345我是中文就是中文不是也是中文67890", '#'));
+		System.out.println(MaskUtils.instance.mask("&:+3", "12345我是中文就是中文不是也是中文67890"));
+		System.out.println(MaskUtils.instance.mask("&:+3", "12345我是中文就是中文不是也是中文67890", '#'));
+		System.out.println(MaskUtils.instance.mask("&:-3", "12345我是中文就是中文不是也是中文67890"));
+		System.out.println(MaskUtils.instance.mask("&:-3", "12345我是中文就是中文不是也是中文67890", '#'));
+
 	}
 }

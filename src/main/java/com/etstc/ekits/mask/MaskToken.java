@@ -1,6 +1,6 @@
 package com.etstc.ekits.mask;
 
-public class MaskToken {
+class MaskToken {
 	static final int NONE = 0;
 	static final int COLON = 1;
 	static final int COMMA = 2;

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.etstc.ekits.StringUtils;
 
-public final class MaskLexer {
+final class MaskLexer {
 
 	private MaskLexer() {
 		// 单例禁止外部实例化

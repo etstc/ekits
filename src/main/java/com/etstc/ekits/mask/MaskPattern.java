@@ -22,7 +22,27 @@ public class MaskPattern {
 		}
 	}
 
+	/**
+	 * 掩码字符串
+	 * 
+	 * @param value
+	 *            被掩码字符串
+	 * @return String:掩码后字符串
+	 */
 	public String mask(CharSequence value) {
+		return this.mask(value, null);
+	}
+
+	/**
+	 * 掩码字符串
+	 * 
+	 * @param value
+	 *            被掩码字符串
+	 * @param maskChar
+	 *            用于掩码字符
+	 * @return String:掩码后字符串
+	 */
+	public String mask(CharSequence value, Character maskChar) {
 		if (value == null) {
 			return null;
 		} else if (maskPatterns.isEmpty()) {
@@ -30,7 +50,7 @@ public class MaskPattern {
 		} else {
 			CharSequence result = value;
 			for (PatternX regex : maskPatterns) {
-				result = regex.mask(result);
+				result = regex.mask(result, maskChar);
 			}
 			return result.toString();
 		}
