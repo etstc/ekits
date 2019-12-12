@@ -1,17 +1,17 @@
 package com.etstc.ekits;
 
-public final class StringUtils {
-	private StringUtils() {
-		// 禁止外部实例化,调用compile
-	}
+import java.util.Arrays;
+import java.util.Collection;
+
+public interface StringUtils {
 
 	/** 空字符串 */
-	public static final String EMPTY = "";
+	static final String EMPTY = "";
 	/** 一个空格字符 */
-	public static final String SPACE = " ";
+	static final String SPACE = " ";
 
 	/** 指定char+指定长度生成String */
-	public static String fill(char c, int len) {
+	static String fill(char c, int len) {
 		if (len < 1) {
 			return EMPTY;
 		}
@@ -23,7 +23,7 @@ public final class StringUtils {
 	}
 
 	/** 删除空白字符 */
-	public static String deleteWhitespace(CharSequence value) {
+	static String deleteWhitespace(CharSequence value) {
 		if (value == null) {
 			return null;
 		} else if (value.length() == 0) {
@@ -46,5 +46,31 @@ public final class StringUtils {
 				return new String(chs, 0, count);
 			}
 		}
+	}
+
+	/** 拼接字符串 */
+	static String join(String separator, Collection<CharSequence> args) {
+		if (args == null) {
+			return null;
+		}
+		if (separator == null) {
+			separator = EMPTY;
+		}
+		StringBuilder buf = new StringBuilder();
+		for (CharSequence t : args) {
+			if (t != null) {
+				buf.append(t).append(separator);
+			}
+		}
+		buf.deleteCharAt(buf.length() - 1);
+		return buf.toString();
+	}
+
+	/** 拼接字符串 */
+	static String join(String separator, CharSequence... args) {
+		if (args == null) {
+			return null;
+		}
+		return join(separator, Arrays.asList(args));
 	}
 }
