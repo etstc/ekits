@@ -1,5 +1,6 @@
 # Compiled class file
 /target/
+/jacob/
 *.class
 
 # workspace
