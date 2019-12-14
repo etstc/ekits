@@ -57,9 +57,8 @@ public class ActiveXInvocationProxy extends InvocationProxy {
 	 * (non-Javadoc)
 	 * 
 	 * @see com.jacob.com.InvocationProxy#invoke(java.lang.String,
-	 *      com.jacob.com.Variant[])
+	 * com.jacob.com.Variant[])
 	 */
-	@SuppressWarnings("unchecked")
 	public Variant invoke(String methodName, Variant targetParameters[]) {
 		Variant mVariantToBeReturned = null;
 		if (mTargetObject == null) {
@@ -67,29 +66,25 @@ public class ActiveXInvocationProxy extends InvocationProxy {
 			// here
 			return null;
 		}
-		Class targetClass = mTargetObject.getClass();
+		Class<? extends Object> targetClass = mTargetObject.getClass();
 		if (methodName == null) {
-			throw new IllegalArgumentException(
-					"InvocationProxy: missing method name");
+			throw new IllegalArgumentException("InvocationProxy: missing method name");
 		}
 		if (targetParameters == null) {
-			throw new IllegalArgumentException(
-					"InvocationProxy: missing Variant parameters");
+			throw new IllegalArgumentException("InvocationProxy: missing Variant parameters");
 		}
 		try {
 			Method targetMethod;
 			Object parametersAsJavaObjects[] = getParametersAsJavaObjects(targetParameters);
-			Class parametersAsJavaClasses[] = getParametersAsJavaClasses(parametersAsJavaObjects);
-			targetMethod = targetClass.getMethod(methodName,
-					parametersAsJavaClasses);
+			Class<?> parametersAsJavaClasses[] = getParametersAsJavaClasses(parametersAsJavaObjects);
+			targetMethod = targetClass.getMethod(methodName, parametersAsJavaClasses);
 			if (targetMethod != null) {
 				// protected classes can't be invoked against even if they
 				// let you grab the method. you could do
 				// targetMethod.setAccessible(true);
 				// but that should be stopped by the security manager
 				Object mReturnedByInvocation = null;
-				mReturnedByInvocation = targetMethod.invoke(mTargetObject,
-						parametersAsJavaObjects);
+				mReturnedByInvocation = targetMethod.invoke(mTargetObject, parametersAsJavaObjects);
 				if (mReturnedByInvocation == null) {
 					mVariantToBeReturned = null;
 				} else if (!(mReturnedByInvocation instanceof Variant)) {
@@ -107,8 +102,7 @@ public class ActiveXInvocationProxy extends InvocationProxy {
 		} catch (IllegalArgumentException e) {
 			// we can throw these inside the catch block so need to re-throw it
 			Exception oneWeShouldToss = new IllegalArgumentException(
-					"Unable to map parameters for method " + methodName + ": "
-							+ e.toString());
+					"Unable to map parameters for method " + methodName + ": " + e.toString());
 			oneWeShouldToss.printStackTrace();
 		} catch (IllegalAccessException e) {
 			// can't access the method on the target instance for some reason
@@ -128,20 +122,18 @@ public class ActiveXInvocationProxy extends InvocationProxy {
 	 * @param parametersAsJavaObjects
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	private Class[] getParametersAsJavaClasses(Object[] parametersAsJavaObjects) {
+	private Class<?>[] getParametersAsJavaClasses(Object[] parametersAsJavaObjects) {
 		if (parametersAsJavaObjects == null) {
-			throw new IllegalArgumentException(
-					"This only works with an array of parameters");
+			throw new IllegalArgumentException("This only works with an array of parameters");
 		}
 		int numParameters = parametersAsJavaObjects.length;
-		Class parametersAsJavaClasses[] = new Class[numParameters];
+		Class<?> parametersAsJavaClasses[] = new Class[numParameters];
 		for (int parameterIndex = 0; parameterIndex < numParameters; parameterIndex++) {
 			Object oneParameterObject = parametersAsJavaObjects[parameterIndex];
 			if (oneParameterObject == null) {
 				parametersAsJavaClasses[parameterIndex] = null;
 			} else {
-				Class oneParameterClass = oneParameterObject.getClass();
+				Class<? extends Object> oneParameterClass = oneParameterObject.getClass();
 				parametersAsJavaClasses[parameterIndex] = oneParameterClass;
 			}
 		}
@@ -156,8 +148,7 @@ public class ActiveXInvocationProxy extends InvocationProxy {
 	 */
 	private Object[] getParametersAsJavaObjects(Variant[] targetParameters) {
 		if (targetParameters == null) {
-			throw new IllegalArgumentException(
-					"This only works with an array of parameters");
+			throw new IllegalArgumentException("This only works with an array of parameters");
 		}
 		int numParameters = targetParameters.length;
 		Object parametersAsJavaObjects[] = new Object[numParameters];
@@ -167,13 +158,10 @@ public class ActiveXInvocationProxy extends InvocationProxy {
 				parametersAsJavaObjects[parameterIndex] = null;
 			} else {
 				try {
-					parametersAsJavaObjects[parameterIndex] = oneParameterObject
-							.toJavaObject();
+					parametersAsJavaObjects[parameterIndex] = oneParameterObject.toJavaObject();
 				} catch (NotImplementedException nie) {
-					throw new IllegalArgumentException(
-							"Can't convert parameter " + parameterIndex
-									+ " type " + oneParameterObject.getvt()
-									+ " to java object: " + nie.getMessage());
+					throw new IllegalArgumentException("Can't convert parameter " + parameterIndex + " type "
+							+ oneParameterObject.getvt() + " to java object: " + nie.getMessage());
 				}
 			}
 		}

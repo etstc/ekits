@@ -73,9 +73,34 @@ public final class OfficeTransform {
 		return instance;
 	}
 
-	private static final int wdFormatPDF = 17;// PDF 格式
+	private static final int WORD_TO_PDF = 17;// PDF 格式
 
-	public void toPdf(String word, String pdf) {
+	/**
+	 * word 转 pdf(输出pdf存在删除生成新的)
+	 * 
+	 * @param word word文件路径
+	 * @param pdf  输出pdf文件路径
+	 */
+	public void word2pdf(String word, String pdf) {
+		word2pdf(word, pdf, true);
+	}
+
+	/**
+	 * word 转 pdf
+	 * 
+	 * @param word              word文件路径
+	 * @param pdf               输出pdf文件路径
+	 * @param delTargetIfExists 输出文件存在：true删除，false抛异常
+	 */
+	public void word2pdf(String word, String pdf, boolean delTargetIfExists) {
+		File tofile = new File(pdf);
+		if (tofile.exists()) {
+			if (delTargetIfExists) {
+				tofile.delete();
+			} else {
+				throw new RuntimeException("The output file[" + pdf + "] already exists.");
+			}
+		}
 		ActiveXComponent app = null;
 		Dispatch doc = null;
 		try {
@@ -83,14 +108,7 @@ public final class OfficeTransform {
 			app.setProperty("Visible", new Variant(false));
 			Dispatch docs = app.getProperty("Documents").toDispatch();
 			doc = Dispatch.call(docs, "Open", word).toDispatch();
-			File tofile = new File(pdf);
-			if (tofile.exists()) {
-				tofile.delete();
-			}
-			Dispatch.call(doc, "SaveAs", pdf, wdFormatPDF);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-
+			Dispatch.call(doc, "SaveAs", pdf, WORD_TO_PDF);
 		} finally {
 			if (doc != null) {
 				Dispatch.call(doc, "Close", false);

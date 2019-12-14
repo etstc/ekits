@@ -40,15 +40,14 @@ public class Dispatch extends JacobObject {
 	/** not used, probably intended for putRef() */
 	public static final int PutRef = 8;
 	/**
-	 * One of legal values for GetDispId. Not used in this layer and probably
-	 * not needed.
+	 * One of legal values for GetDispId. Not used in this layer and probably not
+	 * needed.
 	 */
 	public static final int fdexNameCaseSensitive = 1;
 
 	/**
-	 * This is public because Dispatch.cpp knows its name and accesses it
-	 * directly to get the dispatch id. You really can't rename it or make it
-	 * private
+	 * This is public because Dispatch.cpp knows its name and accesses it directly
+	 * to get the dispatch id. You really can't rename it or make it private
 	 */
 	public long m_pDispatch;
 
@@ -79,19 +78,17 @@ public class Dispatch extends JacobObject {
 	}
 
 	/**
-	 * This constructor calls createInstance with progid. This is the
-	 * constructor used by the ActiveXComponent or by programs that don't like
-	 * the activeX interface but wish to create new connections to windows
-	 * programs.
+	 * This constructor calls createInstance with progid. This is the constructor
+	 * used by the ActiveXComponent or by programs that don't like the activeX
+	 * interface but wish to create new connections to windows programs.
 	 * <p>
-	 * This constructor always creates a new windows/program object because it
-	 * is based on the CoCreate() windows function.
+	 * This constructor always creates a new windows/program object because it is
+	 * based on the CoCreate() windows function.
 	 * <p>
 	 * 
 	 * @param requestedProgramId
-	 * @throws IllegalArgumentException
-	 *             if null is passed in as the program id
-	 *             <p>
+	 * @throws IllegalArgumentException if null is passed in as the program id
+	 *                                  <p>
 	 */
 	public Dispatch(String requestedProgramId) {
 		programId = requestedProgramId;
@@ -104,29 +101,28 @@ public class Dispatch extends JacobObject {
 	}
 
 	/**
-	 * native call createInstance only used by the constructor with the same
-	 * parm type. This probably should be private. It is the wrapper for the
-	 * Windows CoCreate() call
+	 * native call createInstance only used by the constructor with the same parm
+	 * type. This probably should be private. It is the wrapper for the Windows
+	 * CoCreate() call
 	 * <P>
 	 * This ends up calling CoCreate down in the JNI layer
 	 * <p>
-	 * The behavior is different if a ":" character exists in the progId. In
-	 * that case CoGetObject and CreateInstance (someone needs to describe this
-	 * better)
+	 * The behavior is different if a ":" character exists in the progId. In that
+	 * case CoGetObject and CreateInstance (someone needs to describe this better)
 	 * 
 	 * @param progid
 	 */
 	private native void createInstanceNative(String progid);
 
 	/**
-	 * native call getActiveInstance only used by the constructor with the same
-	 * parm type. This probably should be private. It is the wrapper for the
-	 * Windows GetActiveObject() call
+	 * native call getActiveInstance only used by the constructor with the same parm
+	 * type. This probably should be private. It is the wrapper for the Windows
+	 * GetActiveObject() call
 	 * <P>
 	 * This ends up calling GetActiveObject down in the JNI layer
 	 * <p>
-	 * This does not have the special behavior for program ids with ":" in them
-	 * that createInstance has.
+	 * This does not have the special behavior for program ids with ":" in them that
+	 * createInstance has.
 	 * 
 	 * @param progid
 	 */
@@ -135,8 +131,7 @@ public class Dispatch extends JacobObject {
 	/**
 	 * Wrapper around the native method
 	 * 
-	 * @param pProgramIdentifier
-	 *            name of the program you wish to connect to
+	 * @param pProgramIdentifier name of the program you wish to connect to
 	 */
 	protected void getActiveInstance(String pProgramIdentifier) {
 		if (pProgramIdentifier == null || "".equals(pProgramIdentifier)) {
@@ -147,14 +142,14 @@ public class Dispatch extends JacobObject {
 	}
 
 	/**
-	 * native call coCreateInstance only used by the constructor with the same
-	 * parm type. This probably should be private. It is the wrapper for the
-	 * Windows CoCreate() call
+	 * native call coCreateInstance only used by the constructor with the same parm
+	 * type. This probably should be private. It is the wrapper for the Windows
+	 * CoCreate() call
 	 * <P>
 	 * This ends up calling CoCreate down in the JNI layer
 	 * <p>
-	 * This does not have the special behavior for program ids with ":" in them
-	 * that createInstance has.
+	 * This does not have the special behavior for program ids with ":" in them that
+	 * createInstance has.
 	 * 
 	 * @param progid
 	 */
@@ -176,15 +171,14 @@ public class Dispatch extends JacobObject {
 	/**
 	 * Return a different interface by IID string.
 	 * <p>
-	 * Once you have a Dispatch object, you can navigate to the other interfaces
-	 * of a COM object by calling QueryInterafce. The argument is an IID string
-	 * in the format: "{9BF24410-B2E0-11D4-A695-00104BFF3241}". You typically
-	 * get this string from the idl file (it's called uuid in there). Any
-	 * interface you try to use must be derived from IDispatch. T The atl
-	 * example uses this.
+	 * Once you have a Dispatch object, you can navigate to the other interfaces of
+	 * a COM object by calling QueryInterafce. The argument is an IID string in the
+	 * format: "{9BF24410-B2E0-11D4-A695-00104BFF3241}". You typically get this
+	 * string from the idl file (it's called uuid in there). Any interface you try
+	 * to use must be derived from IDispatch. T The atl example uses this.
 	 * <p>
-	 * The Dispatch instance resulting from this query is instanciated in the
-	 * JNI code.
+	 * The Dispatch instance resulting from this query is instanciated in the JNI
+	 * code.
 	 * 
 	 * @param iid
 	 * @return Dispatch a disptach that matches ??
@@ -192,9 +186,9 @@ public class Dispatch extends JacobObject {
 	public native Dispatch QueryInterface(String iid);
 
 	/**
-	 * Constructor that only gets called from JNI QueryInterface calls JNI code
-	 * that looks up the object for the key passed in. The JNI CODE then creates
-	 * a new dispatch object using this constructor
+	 * Constructor that only gets called from JNI QueryInterface calls JNI code that
+	 * looks up the object for the key passed in. The JNI CODE then creates a new
+	 * dispatch object using this constructor
 	 * 
 	 * @param pDisp
 	 */
@@ -203,11 +197,11 @@ public class Dispatch extends JacobObject {
 	}
 
 	/**
-	 * Constructor to be used by subclass that want to swap themselves in for
-	 * the default Dispatch class. Usually you will have a class like
-	 * WordDocument that is a subclass of Dispatch and it will have a
-	 * constructor public WordDocument(Dispatch). That constructor should just
-	 * call this constructor as super(Dispatch)
+	 * Constructor to be used by subclass that want to swap themselves in for the
+	 * default Dispatch class. Usually you will have a class like WordDocument that
+	 * is a subclass of Dispatch and it will have a constructor public
+	 * WordDocument(Dispatch). That constructor should just call this constructor as
+	 * super(Dispatch)
 	 * 
 	 * @param dispatchToBeDisplaced
 	 */
@@ -252,8 +246,7 @@ public class Dispatch extends JacobObject {
 		} else {
 			// looks like a double release
 			if (isDebugEnabled()) {
-				debug(this.getClass().getName() + ":" + this.hashCode()
-						+ " double release");
+				debug(this.getClass().getName() + ":" + this.hashCode() + " double release");
 			}
 		}
 	}
@@ -271,22 +264,17 @@ public class Dispatch extends JacobObject {
 	}
 
 	/**
-	 * @param theOneInQuestion
-	 *            dispatch being tested
-	 * @throws IllegalStateException
-	 *             if this dispatch isn't hooked up
-	 * @throws IllegalArgumentException
-	 *             if null the dispatch under test is null
+	 * @param theOneInQuestion dispatch being tested
+	 * @throws IllegalStateException    if this dispatch isn't hooked up
+	 * @throws IllegalArgumentException if null the dispatch under test is null
 	 */
 	private static void throwIfUnattachedDispatch(Dispatch theOneInQuestion) {
 		if (theOneInQuestion == null) {
-			throw new IllegalArgumentException(
-					"Can't pass in null Dispatch object");
+			throw new IllegalArgumentException("Can't pass in null Dispatch object");
 		} else if (theOneInQuestion.isAttached()) {
 			return;
 		} else {
-			throw new IllegalStateException(
-					"Dispatch not hooked to windows memory");
+			throw new IllegalStateException("Dispatch not hooked to windows memory");
 		}
 	}
 
@@ -305,15 +293,13 @@ public class Dispatch extends JacobObject {
 	 * @param val
 	 * @throws com.jacob.com.NotImplementedException
 	 */
-	public static void put_Casesensitive(Dispatch dispatchTarget, String name,
-			Object val) {
+	public static void put_Casesensitive(Dispatch dispatchTarget, String name, Object val) {
 		throw new NotImplementedException("not implemented yet");
 	}
 
 	/*
 	 * ============================================================ start of the
-	 * invokev section
-	 * ===========================================================
+	 * invokev section ===========================================================
 	 */
 	// eliminate _Guid arg
 	/**
@@ -325,8 +311,8 @@ public class Dispatch extends JacobObject {
 	 * @param vArg
 	 * @param uArgErr
 	 */
-	public static void invokeSubv(Dispatch dispatchTarget, String name,
-			int dispID, int lcid, int wFlags, Variant[] vArg, int[] uArgErr) {
+	public static void invokeSubv(Dispatch dispatchTarget, String name, int dispID, int lcid, int wFlags,
+			Variant[] vArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
 		invokev(dispatchTarget, name, dispID, lcid, wFlags, vArg, uArgErr);
 	}
@@ -338,11 +324,9 @@ public class Dispatch extends JacobObject {
 	 * @param vArg
 	 * @param uArgErr
 	 */
-	public static void invokeSubv(Dispatch dispatchTarget, String name,
-			int wFlags, Variant[] vArg, int[] uArgErr) {
+	public static void invokeSubv(Dispatch dispatchTarget, String name, int wFlags, Variant[] vArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invokev(dispatchTarget, name, 0, Dispatch.LOCALE_SYSTEM_DEFAULT,
-				wFlags, vArg, uArgErr);
+		invokev(dispatchTarget, name, 0, Dispatch.LOCALE_SYSTEM_DEFAULT, wFlags, vArg, uArgErr);
 	}
 
 	/**
@@ -352,11 +336,9 @@ public class Dispatch extends JacobObject {
 	 * @param vArg
 	 * @param uArgErr
 	 */
-	public static void invokeSubv(Dispatch dispatchTarget, int dispID,
-			int wFlags, Variant[] vArg, int[] uArgErr) {
+	public static void invokeSubv(Dispatch dispatchTarget, int dispID, int wFlags, Variant[] vArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invokev(dispatchTarget, null, dispID, Dispatch.LOCALE_SYSTEM_DEFAULT,
-				wFlags, vArg, uArgErr);
+		invokev(dispatchTarget, null, dispID, Dispatch.LOCALE_SYSTEM_DEFAULT, wFlags, vArg, uArgErr);
 	}
 
 	/**
@@ -368,35 +350,30 @@ public class Dispatch extends JacobObject {
 	 * @return never returns anything because
 	 * @throws com.jacob.com.NotImplementedException
 	 */
-	public static Variant callN_CaseSensitive(Dispatch dispatchTarget,
-			String name, Object[] values) {
+	public static Variant callN_CaseSensitive(Dispatch dispatchTarget, String name, Object[] values) {
 		throw new NotImplementedException("not implemented yet");
 	}
 
 	/**
 	 * @param dispatchTarget
 	 * @param name
-	 * @param args
-	 *            an array of argument objects
+	 * @param args           an array of argument objects
 	 */
-	public static void callSubN(Dispatch dispatchTarget, String name,
-			Object... args) {
+	public static void callSubN(Dispatch dispatchTarget, String name, Object... args) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invokeSubv(dispatchTarget, name, Dispatch.Method | Dispatch.Get,
-				VariantUtilities.objectsToVariants(args), new int[args.length]);
+		invokeSubv(dispatchTarget, name, Dispatch.Method | Dispatch.Get, VariantUtilities.objectsToVariants(args),
+				new int[args.length]);
 	}
 
 	/**
 	 * @param dispatchTarget
 	 * @param dispID
-	 * @param args
-	 *            an array of argument objects
+	 * @param args           an array of argument objects
 	 */
-	public static void callSubN(Dispatch dispatchTarget, int dispID,
-			Object... args) {
+	public static void callSubN(Dispatch dispatchTarget, int dispID, Object... args) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invokeSubv(dispatchTarget, dispID, Dispatch.Method | Dispatch.Get,
-				VariantUtilities.objectsToVariants(args), new int[args.length]);
+		invokeSubv(dispatchTarget, dispID, Dispatch.Method | Dispatch.Get, VariantUtilities.objectsToVariants(args),
+				new int[args.length]);
 	}
 
 	/*
@@ -410,8 +387,7 @@ public class Dispatch extends JacobObject {
 	 * @return int id for the passed in name
 	 */
 	public static int getIDOfName(Dispatch dispatchTarget, String name) {
-		int ids[] = getIDsOfNames(dispatchTarget,
-				Dispatch.LOCALE_SYSTEM_DEFAULT, new String[] { name });
+		int ids[] = getIDsOfNames(dispatchTarget, Dispatch.LOCALE_SYSTEM_DEFAULT, new String[] { name });
 		return ids[0];
 	}
 
@@ -422,8 +398,7 @@ public class Dispatch extends JacobObject {
 	 * @return int[] in id array for passed in names
 	 */
 	// eliminated _Guid argument
-	public static native int[] getIDsOfNames(Dispatch dispatchTarget, int lcid,
-			String[] names);
+	public static native int[] getIDsOfNames(Dispatch dispatchTarget, int lcid, String[] names);
 
 	/**
 	 * @param dispatchTarget
@@ -432,14 +407,12 @@ public class Dispatch extends JacobObject {
 	 */
 	// eliminated _Guid argument
 	public static int[] getIDsOfNames(Dispatch dispatchTarget, String[] names) {
-		return getIDsOfNames(dispatchTarget, Dispatch.LOCALE_SYSTEM_DEFAULT,
-				names);
+		return getIDsOfNames(dispatchTarget, Dispatch.LOCALE_SYSTEM_DEFAULT, names);
 	}
 
 	/*
 	 * ============================================================ start of the
-	 * invokev section
-	 * ===========================================================
+	 * invokev section ===========================================================
 	 */
 	/**
 	 * @param dispatchTarget
@@ -447,11 +420,22 @@ public class Dispatch extends JacobObject {
 	 * @param args
 	 * @return Variant returned by call
 	 */
-	public static Variant callN(Dispatch dispatchTarget, String name,
-			Object... args) {
+	public static Variant callN(Dispatch dispatchTarget, String name, Object... args) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, name, Dispatch.Method | Dispatch.Get,
-				VariantUtilities.objectsToVariants(args), new int[args.length]);
+		return invokev(dispatchTarget, name, Dispatch.Method | Dispatch.Get, VariantUtilities.objectsToVariants(args),
+				new int[args.length]);
+	}
+
+	/**
+	 * @param dispatchTarget
+	 * @param name
+	 * @param args
+	 * @return Variant returned by call
+	 */
+	public static Variant callN(Dispatch dispatchTarget, String name, Variant... args) {
+		throwIfUnattachedDispatch(dispatchTarget);
+		return invokev(dispatchTarget, name, Dispatch.Method | Dispatch.Get, VariantUtilities.objectsToVariants(args),
+				new int[args.length]);
 	}
 
 	/**
@@ -460,11 +444,21 @@ public class Dispatch extends JacobObject {
 	 * @param args
 	 * @return Variant returned by call
 	 */
-	public static Variant callN(Dispatch dispatchTarget, int dispID,
-			Object... args) {
+	public static Variant callN(Dispatch dispatchTarget, int dispID, Object... args) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, dispID, Dispatch.Method | Dispatch.Get,
-				VariantUtilities.objectsToVariants(args), new int[args.length]);
+		return invokev(dispatchTarget, dispID, Dispatch.Method | Dispatch.Get, VariantUtilities.objectsToVariants(args),
+				new int[args.length]);
+	}
+
+	/**
+	 * @param dispatchTarget
+	 * @param dispID
+	 * @param args
+	 * @return Variant returned by call
+	 */
+	public static Variant callN(Dispatch dispatchTarget, int dispID, Variant... args) {
+		throwIfUnattachedDispatch(dispatchTarget);
+		return invokev(dispatchTarget, dispID, Dispatch.Method | Dispatch.Get, args, new int[args.length]);
 	}
 
 	/**
@@ -477,11 +471,10 @@ public class Dispatch extends JacobObject {
 	 * @param uArgErr
 	 * @return Variant returned by invoke
 	 */
-	public static Variant invoke(Dispatch dispatchTarget, String name,
-			int dispID, int lcid, int wFlags, Object[] oArg, int[] uArgErr) {
+	public static Variant invoke(Dispatch dispatchTarget, String name, int dispID, int lcid, int wFlags, Object[] oArg,
+			int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, name, dispID, lcid, wFlags,
-				VariantUtilities.objectsToVariants(oArg), uArgErr);
+		return invokev(dispatchTarget, name, dispID, lcid, wFlags, VariantUtilities.objectsToVariants(oArg), uArgErr);
 	}
 
 	/**
@@ -492,11 +485,9 @@ public class Dispatch extends JacobObject {
 	 * @param uArgErr
 	 * @return Variant returned by invoke
 	 */
-	public static Variant invoke(Dispatch dispatchTarget, String name,
-			int wFlags, Object[] oArg, int[] uArgErr) {
+	public static Variant invoke(Dispatch dispatchTarget, String name, int wFlags, Object[] oArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, name, wFlags, VariantUtilities
-				.objectsToVariants(oArg), uArgErr);
+		return invokev(dispatchTarget, name, wFlags, VariantUtilities.objectsToVariants(oArg), uArgErr);
 	}
 
 	/**
@@ -507,11 +498,9 @@ public class Dispatch extends JacobObject {
 	 * @param uArgErr
 	 * @return Variant returned by invoke
 	 */
-	public static Variant invoke(Dispatch dispatchTarget, int dispID,
-			int wFlags, Object[] oArg, int[] uArgErr) {
+	public static Variant invoke(Dispatch dispatchTarget, int dispID, int wFlags, Object[] oArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, dispID, wFlags, VariantUtilities
-				.objectsToVariants(oArg), uArgErr);
+		return invokev(dispatchTarget, dispID, wFlags, VariantUtilities.objectsToVariants(oArg), uArgErr);
 	}
 
 	/*
@@ -535,8 +524,7 @@ public class Dispatch extends JacobObject {
 	 * @param attributes
 	 * @return Variant returned by underlying callN
 	 */
-	public static Variant call(Dispatch dispatchTarget, String name,
-			Object... attributes) {
+	public static Variant call(Dispatch dispatchTarget, String name, Object... attributes) {
 		throwIfUnattachedDispatch(dispatchTarget);
 		return callN(dispatchTarget, name, attributes);
 	}
@@ -554,21 +542,18 @@ public class Dispatch extends JacobObject {
 	/**
 	 * @param dispatchTarget
 	 * @param dispid
-	 * @param attributes
-	 *            var arg list of attributes that will be passed to the
-	 *            underlying function
+	 * @param attributes     var arg list of attributes that will be passed to the
+	 *                       underlying function
 	 * @return Variant returned by underlying callN
 	 */
-	public static Variant call(Dispatch dispatchTarget, int dispid,
-			Object... attributes) {
+	public static Variant call(Dispatch dispatchTarget, int dispid, Object... attributes) {
 		throwIfUnattachedDispatch(dispatchTarget);
 		return callN(dispatchTarget, dispid, attributes);
 	}
 
 	/*
 	 * ============================================================ start of the
-	 * invoke section
-	 * ===========================================================
+	 * invoke section ===========================================================
 	 */
 	/**
 	 * @param dispatchTarget
@@ -577,8 +562,7 @@ public class Dispatch extends JacobObject {
 	 */
 	public static void put(Dispatch dispatchTarget, String name, Object val) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invoke(dispatchTarget, name, Dispatch.Put, new Object[] { val },
-				new int[1]);
+		invoke(dispatchTarget, name, Dispatch.Put, new Object[] { val }, new int[1]);
 	}
 
 	/**
@@ -588,14 +572,12 @@ public class Dispatch extends JacobObject {
 	 */
 	public static void put(Dispatch dispatchTarget, int dispid, Object val) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invoke(dispatchTarget, dispid, Dispatch.Put, new Object[] { val },
-				new int[1]);
+		invoke(dispatchTarget, dispid, Dispatch.Put, new Object[] { val }, new int[1]);
 	}
 
 	/*
 	 * ============================================================ start of the
-	 * invokev section
-	 * ===========================================================
+	 * invokev section ===========================================================
 	 */
 	// removed _Guid argument
 	/**
@@ -608,8 +590,8 @@ public class Dispatch extends JacobObject {
 	 * @param uArgErr
 	 * @return Variant returned by underlying invokev
 	 */
-	public static native Variant invokev(Dispatch dispatchTarget, String name,
-			int dispID, int lcid, int wFlags, Variant[] vArg, int[] uArgErr);
+	public static native Variant invokev(Dispatch dispatchTarget, String name, int dispID, int lcid, int wFlags,
+			Variant[] vArg, int[] uArgErr);
 
 	/**
 	 * @param dispatchTarget
@@ -619,11 +601,9 @@ public class Dispatch extends JacobObject {
 	 * @param uArgErr
 	 * @return Variant returned by underlying invokev
 	 */
-	public static Variant invokev(Dispatch dispatchTarget, String name,
-			int wFlags, Variant[] vArg, int[] uArgErr) {
+	public static Variant invokev(Dispatch dispatchTarget, String name, int wFlags, Variant[] vArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, name, 0, Dispatch.LOCALE_SYSTEM_DEFAULT,
-				wFlags, vArg, uArgErr);
+		return invokev(dispatchTarget, name, 0, Dispatch.LOCALE_SYSTEM_DEFAULT, wFlags, vArg, uArgErr);
 	}
 
 	/**
@@ -635,12 +615,11 @@ public class Dispatch extends JacobObject {
 	 * @param wFlagsEx
 	 * @return Variant returned by underlying invokev
 	 */
-	public static Variant invokev(Dispatch dispatchTarget, String name,
-			int wFlags, Variant[] vArg, int[] uArgErr, int wFlagsEx) {
+	public static Variant invokev(Dispatch dispatchTarget, String name, int wFlags, Variant[] vArg, int[] uArgErr,
+			int wFlagsEx) {
 		throwIfUnattachedDispatch(dispatchTarget);
 		// do not implement IDispatchEx for now
-		return invokev(dispatchTarget, name, 0, Dispatch.LOCALE_SYSTEM_DEFAULT,
-				wFlags, vArg, uArgErr);
+		return invokev(dispatchTarget, name, 0, Dispatch.LOCALE_SYSTEM_DEFAULT, wFlags, vArg, uArgErr);
 	}
 
 	/**
@@ -651,11 +630,9 @@ public class Dispatch extends JacobObject {
 	 * @param uArgErr
 	 * @return Variant returned by underlying invokev
 	 */
-	public static Variant invokev(Dispatch dispatchTarget, int dispID,
-			int wFlags, Variant[] vArg, int[] uArgErr) {
+	public static Variant invokev(Dispatch dispatchTarget, int dispID, int wFlags, Variant[] vArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, null, dispID,
-				Dispatch.LOCALE_SYSTEM_DEFAULT, wFlags, vArg, uArgErr);
+		return invokev(dispatchTarget, null, dispID, Dispatch.LOCALE_SYSTEM_DEFAULT, wFlags, vArg, uArgErr);
 	}
 
 	/*
@@ -674,17 +651,15 @@ public class Dispatch extends JacobObject {
 	 * @param oArg
 	 * @param uArgErr
 	 */
-	public static void invokeSub(Dispatch dispatchTarget, String name,
-			int dispid, int lcid, int wFlags, Object[] oArg, int[] uArgErr) {
+	public static void invokeSub(Dispatch dispatchTarget, String name, int dispid, int lcid, int wFlags, Object[] oArg,
+			int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invokeSubv(dispatchTarget, name, dispid, lcid, wFlags, VariantUtilities
-				.objectsToVariants(oArg), uArgErr);
+		invokeSubv(dispatchTarget, name, dispid, lcid, wFlags, VariantUtilities.objectsToVariants(oArg), uArgErr);
 	}
 
 	/*
 	 * ============================================================ start of the
-	 * invokeSub section
-	 * ===========================================================
+	 * invokeSub section ===========================================================
 	 */
 	/**
 	 * @param dispatchTarget
@@ -693,11 +668,9 @@ public class Dispatch extends JacobObject {
 	 * @param oArg
 	 * @param uArgErr
 	 */
-	public static void invokeSub(Dispatch dispatchTarget, String name,
-			int wFlags, Object[] oArg, int[] uArgErr) {
+	public static void invokeSub(Dispatch dispatchTarget, String name, int wFlags, Object[] oArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invokeSub(dispatchTarget, name, 0, Dispatch.LOCALE_SYSTEM_DEFAULT,
-				wFlags, oArg, uArgErr);
+		invokeSub(dispatchTarget, name, 0, Dispatch.LOCALE_SYSTEM_DEFAULT, wFlags, oArg, uArgErr);
 	}
 
 	/**
@@ -707,17 +680,14 @@ public class Dispatch extends JacobObject {
 	 * @param oArg
 	 * @param uArgErr
 	 */
-	public static void invokeSub(Dispatch dispatchTarget, int dispid,
-			int wFlags, Object[] oArg, int[] uArgErr) {
+	public static void invokeSub(Dispatch dispatchTarget, int dispid, int wFlags, Object[] oArg, int[] uArgErr) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invokeSub(dispatchTarget, null, dispid, Dispatch.LOCALE_SYSTEM_DEFAULT,
-				wFlags, oArg, uArgErr);
+		invokeSub(dispatchTarget, null, dispid, Dispatch.LOCALE_SYSTEM_DEFAULT, wFlags, oArg, uArgErr);
 	}
 
 	/*
 	 * ============================================================ start of the
-	 * callSubN section
-	 * ===========================================================
+	 * callSubN section ===========================================================
 	 */
 	/**
 	 * makes call to native callSubN
@@ -735,12 +705,10 @@ public class Dispatch extends JacobObject {
 	 * 
 	 * @param dispatchTarget
 	 * @param name
-	 * @param attributes
-	 *            var args list of attributes to be passed to underlying
-	 *            functions
+	 * @param attributes     var args list of attributes to be passed to underlying
+	 *                       functions
 	 */
-	public static void callSub(Dispatch dispatchTarget, String name,
-			Object... attributes) {
+	public static void callSub(Dispatch dispatchTarget, String name, Object... attributes) {
 		throwIfUnattachedDispatch(dispatchTarget);
 		callSubN(dispatchTarget, name, attributes);
 	}
@@ -761,20 +729,17 @@ public class Dispatch extends JacobObject {
 	 * 
 	 * @param dispatchTarget
 	 * @param dispid
-	 * @param attributes
-	 *            var args list of attributes to be passed to underlying
-	 *            function
+	 * @param attributes     var args list of attributes to be passed to underlying
+	 *                       function
 	 */
-	public static void callSub(Dispatch dispatchTarget, int dispid,
-			Object... attributes) {
+	public static void callSub(Dispatch dispatchTarget, int dispid, Object... attributes) {
 		throwIfUnattachedDispatch(dispatchTarget);
 		callSubN(dispatchTarget, dispid, attributes);
 	}
 
 	/*
 	 * ============================================================ start of the
-	 * invokev section
-	 * ===========================================================
+	 * invokev section ===========================================================
 	 */
 	/**
 	 * Cover for call to underlying invokev()
@@ -785,8 +750,7 @@ public class Dispatch extends JacobObject {
 	 */
 	public static Variant get(Dispatch dispatchTarget, String name) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, name, Dispatch.Get, NO_VARIANT_ARGS,
-				NO_INT_ARGS);
+		return invokev(dispatchTarget, name, Dispatch.Get, NO_VARIANT_ARGS, NO_INT_ARGS);
 	}
 
 	/**
@@ -798,14 +762,12 @@ public class Dispatch extends JacobObject {
 	 */
 	public static Variant get(Dispatch dispatchTarget, int dispid) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		return invokev(dispatchTarget, dispid, Dispatch.Get, NO_VARIANT_ARGS,
-				NO_INT_ARGS);
+		return invokev(dispatchTarget, dispid, Dispatch.Get, NO_VARIANT_ARGS, NO_INT_ARGS);
 	}
 
 	/*
 	 * ============================================================ start of the
-	 * invoke section
-	 * ===========================================================
+	 * invoke section ===========================================================
 	 */
 	/**
 	 * cover for underlying call to invoke
@@ -816,8 +778,7 @@ public class Dispatch extends JacobObject {
 	 */
 	public static void putRef(Dispatch dispatchTarget, String name, Object val) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invoke(dispatchTarget, name, Dispatch.PutRef, new Object[] { val },
-				new int[1]);
+		invoke(dispatchTarget, name, Dispatch.PutRef, new Object[] { val }, new int[1]);
 	}
 
 	/**
@@ -829,8 +790,7 @@ public class Dispatch extends JacobObject {
 	 */
 	public static void putRef(Dispatch dispatchTarget, int dispid, Object val) {
 		throwIfUnattachedDispatch(dispatchTarget);
-		invoke(dispatchTarget, dispid, Dispatch.PutRef, new Object[] { val },
-				new int[1]);
+		invoke(dispatchTarget, dispid, Dispatch.PutRef, new Object[] { val }, new int[1]);
 	}
 
 	/**
@@ -856,8 +816,8 @@ public class Dispatch extends JacobObject {
 	public static native int hasExited(Dispatch disp, int dispid, int lcid);
 
 	/**
-	 * The method is used to poll until it returns 1, indicating that the COM
-	 * server in gone.
+	 * The method is used to poll until it returns 1, indicating that the COM server
+	 * in gone.
 	 * <p>
 	 * Sourceforge feature request 2927058
 	 * 
